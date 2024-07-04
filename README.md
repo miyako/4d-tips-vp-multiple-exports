@@ -15,7 +15,9 @@ $dst:=Folder(fk desktop folder)
 For each ($document; $documents)
   VP IMPORT DOCUMENT("area"; $document.platformPath)
   VP EXPORT DOCUMENT("area"; $dst.file($document.name+".pdf"))
-End for each 
+End for each
+
+ALERT(JSON Stringify($statuses; *))
 ```
 
 あるいはループ処理でオフスクリーンエリアを作成し，下記のようなコードを実行してもダメです。
