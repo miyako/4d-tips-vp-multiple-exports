@@ -49,3 +49,40 @@ var $exporter : cs.VPExporter
 $exporter:=cs.VPExporter.new($documents)
 $status:=$exporter.export()
 ```
+
+## ポイント
+
+内部的にワーカーを起動し，`4D.Signal`で待ち合わせをしています。
+
+```4d
+Function export() : Collection
+	
+	This._signal:=New signal
+	$workerName:=Current method name+"#"+Generate UUID
+	CALL WORKER($workerName; This._start; This)
+	This._signal.wait()
+	
+	return This._signal.statuses
+```
+
+処理するべき`4D.File`をコレクションに収納しておき，`1`個ずつ`.shift()`で取り出して処理しています。
+
+```4d
+Function _export() : cs.VPExporter
+	
+	This._currentFile:=This.documents.shift()
+	
+	VP Run offscreen area(This)
+```
+
+`VP IMPORT DOCUMENT`と`VP EXPORT DOCUMENT`はいずれも`.formula`でコールバック関数を指定するので，直前にメンバー関数を切り替えてからコマンドを実行しています。
+
+```4d
+This.formula:=This.onImport
+VP IMPORT DOCUMENT(This.area; This._currentFile.platformPath; This)
+```
+
+```4d
+$this.formula:=$this.onExport
+VP EXPORT DOCUMENT($area; $this.target.file($this._exportName()).platformPath; $this)
+```
