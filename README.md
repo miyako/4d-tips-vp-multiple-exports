@@ -30,7 +30,7 @@ Case of
 End case 
 ```
 
-それぞれのコールバック処理でつぎに実行するべきコマンドを呼び出す必要があります。
+それぞれのコールバック処理でつぎに実行するべきコマンドを順番に呼び出す必要があります。
 
 1. VP Run offscreen area
 2. FORM Event.code=On VP Ready→VP IMPORT DOCUMENT
