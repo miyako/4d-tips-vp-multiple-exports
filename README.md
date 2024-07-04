@@ -34,3 +34,16 @@ End case
 2. FORM Event.code=On VP Ready→VP IMPORT DOCUMENT
 3. formula→VP EXPORT DOCUMENT
 4. formula→ACCEPT→1に戻る
+
+これを典型的な4Dコマンドのような同期処理で実行するためには，`4D.Signal`でワーカーの処理を待つ必要があります。
+
+## 例題
+
+```4d
+var $documents : Collection
+$documents:=[File("/RESOURCES/1.4vp"); File("/RESOURCES/2.4vp"); File("/RESOURCES/3.4vp")]
+
+var $exporter : cs.VPExporter
+$exporter:=cs.VPExporter.new($documents)
+$status:=$exporter.export()
+```
